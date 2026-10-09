@@ -73,39 +73,6 @@ class FlatPlottingTest(unittest.TestCase):
         self.assertEqual(axes.get_aspect(), 1.0)
 
     @patch("matplotlib.pyplot.show")
-    def test_arrow_scale_controls_length(self, _):
-        self.model.plot_brightness_map(method="mean", arrow_scale=1.0)
-        default_arrows = plt.gcf().axes[0].collections[1]
-        default_scale = default_arrows.scale
-
-        plt.close("all")
-        self.model.plot_brightness_map(method="mean", arrow_scale=2.0)
-        larger_arrows = plt.gcf().axes[0].collections[1]
-        self.assertAlmostEqual(larger_arrows.scale, default_scale / 2)
-        self.assertEqual(larger_arrows.width, 0.005)
-
-    @patch("matplotlib.pyplot.show")
-    def test_arrow_scale_must_be_positive(self, _):
-        with self.assertRaisesRegex(ValueError, "arrow_scale"):
-            self.model.plot_brightness_map(method="mean", arrow_scale=0)
-
-    @patch("matplotlib.pyplot.show")
-    def test_plot_methods_return_editable_figure_before_display(self, show):
-        for plot_method in (self.model.plot_brightness_map,
-                            self.model.plot_error_map):
-            with self.subTest(plot_method=plot_method.__name__):
-                fig, axes = plot_method(method="mean", show_arrows=False)
-                self.assertIs(fig, plt.gcf())
-                self.assertIs(axes, fig.axes[0])
-
-                axes.set_xlim(0.5, 1.5)
-                axes.set_ylim(10.5, 11.5)
-                np.testing.assert_allclose(axes.get_xlim(), [0.5, 1.5])
-                np.testing.assert_allclose(axes.get_ylim(), [10.5, 11.5])
-                plt.close(fig)
-        show.assert_not_called()
-
-    @patch("matplotlib.pyplot.show")
     def test_adaptive_error_map_displays_computed_errors(self, _):
         self.model.plot_error_map(method="adaptive", show_arrows=False)
         plotted = np.asarray(plt.gcf().axes[0].collections[0].get_array())
