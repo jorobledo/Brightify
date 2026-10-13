@@ -7,7 +7,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-from Brightify.main import Flat
+from brightify.main import Flat
 
 
 class FlatPlottingTest(unittest.TestCase):
